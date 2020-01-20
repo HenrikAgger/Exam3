@@ -35,7 +35,7 @@ import utils.EMF_Creator;
 public class SwappiResourceV2 {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
                 "pu",
-                "jdbc:mysql://localhost:3307/exam2",
+                "jdbc:mysql://localhost:3307/exam3",
                 "dev",
                 "ax2",
                 EMF_Creator.Strategy.CREATE);
