@@ -1,4 +1,6 @@
-const URL = "http://localhost:8080/TESTexam2";
+const URL = "http://localhost:8080/exam3";
+//const URL = "";
+
 
 function handleHttpErrors(res) {
   if (!res.ok) {
@@ -56,19 +58,14 @@ function ApiFacade() {
     return fetch(URL + "/api/info/user", options).then(handleHttpErrors);
   };
 
-  const fetchJokesByCategory = (categories) => {
+  const fetchMovieInfo = (title) => {
     const options = makeOptions("GET", false);
-    return fetch(URL + "/api/jokeByCategory/"+categories, options).then(handleHttpErrors);
+    return fetch(URL + "/api/movieInfo/"+title, options).then(handleHttpErrors);
   };
 
-  const fetchJokesByCategoryV2 = (categories) => {
+  const fetchMovieInfoAll = (title) => {
     const options = makeOptions("GET", true);
-    return fetch(URL + "/api/jokeByCategoryV2/"+categories, options).then(handleHttpErrors);
-  };
-
-  const fecthCategories=() => {
-    const options = makeOptions("GET", false);
-    return fetch(URL + "/api/categoryCount/all", options).then(handleHttpErrors);
+    return fetch(URL + "/api/movieInfo/all/"+title, options).then(handleHttpErrors);
   };
 
   const getAllPersons = () => {
@@ -92,9 +89,8 @@ function ApiFacade() {
     getAllPersons,
     findPerson,
     createPerson,
-    fetchJokesByCategory,
-    fetchJokesByCategoryV2,
-    fecthCategories
+    fetchMovieInfo,
+    fetchMovieInfoAll
   };
 }
 

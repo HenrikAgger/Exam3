@@ -64,10 +64,10 @@ function App() {
       <Header></Header>
       <Switch>
         <Route path="/login">
-          {loggedIn ? (<div><JokesV2 /></div>) : <Login login={login} />}
+          {loggedIn ? (<div><MovieInfoAll /></div>) : <Login login={login} />}
         </Route>
-        <Route path="/jokes">
-          <Jokes></Jokes>
+        <Route path="/movieInfo">
+          <MovieInfo></MovieInfo>
         </Route>
       </Switch>
     </Router>
@@ -83,121 +83,104 @@ function Header() {
         <NavLink to="/login">Login</NavLink>
       </li>
       <li>
-        <NavLink to="/jokes">Jokes</NavLink>
+        <NavLink to="/movieInfo">Movie info</NavLink>
       </li>
     </ul>
   );
 }
 
-function Jokes() {
+function MovieInfo() {
   const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [movietitle, setMovietitle] = useState("");
 
-  useEffect(() => {
-    facade
-      .fetchJokesByCategory("food,fashion,history")
-      .then(res => setData(res.jokes));
-    facade.fecthCategories().then(res => setCategories(res));
-  }, []);
-
-  const fetchData = cats => {
-    facade.fetchJokesByCategory(cats).then(res => setData(res.jokes));
+  const fetchData = (evt) => {
+    evt.preventDefault();
+    facade.fetchMovieInfo(movietitle).then(res => setData([res]));
   };
-
-  return (
-    <div>
-      <table>
-        <tr>
-          <th>category</th>
-          <th>joke</th>
-        </tr>
-        {data.map((joke, index) => (
-          <tr key={index}>
-            <td>{joke.category}</td>
-            <td>{joke.joke}</td>
-          </tr>
-        ))}
-      </table>
-      <CategorySelect data={categories} fetchData={fetchData} count={4}></CategorySelect>
-    </div>
-  );
-}
-
-function JokesV2() {
-  const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    facade
-      .fetchJokesByCategoryV2("food,fashion,history")
-      .then(res => setData(res.jokes));
-    facade.fecthCategories().then(res => setCategories(res));
-  }, []);
-
-  const fetchData = cats => {
-    facade.fetchJokesByCategoryV2(cats).then(res => setData(res.jokes));
-  };
-
-  return (
-    <div>
-      <table>
-        <tr>
-          <th>category</th>
-          <th>joke</th>
-        </tr>
-        {data.map((joke, index) => (
-          <tr key={index}>
-            <td>{joke.category}</td>
-            <td>{joke.joke}</td>
-          </tr>
-        ))}
-      </table>
-      <CategorySelect data={categories} fetchData={fetchData} count={12}></CategorySelect>
-    </div>
-  );
-}
-
-function CategorySelect({ data, fetchData, count }) {
-  const [categories, setCategories] = useState({});
 
   const onChange = evt => {
-    setCategories({ ...categories, [evt.target.id]: evt.target.value });
-  };
-
-  const onSubmit = evt => {
-    evt.preventDefault();
-    fetchData(
-      Object.keys(categories)
-        .map(function(k) {
-          return categories[k];
-        })
-        .join(",")
-    );
-  };
-
-  const createSelects = (count, data) => {
-    let selects = [];
-
-    for (let i = 1; i <= count; i++) {
-      selects.push(
-        <select id={"category" + i} onChange={onChange}>
-          <option value="">Select...</option>
-          {data.map((category) => (
-            <option key={category.id} value={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    return selects;
-  };
+    setMovietitle(evt.target.value);
+  }
 
   return (
-    <form onSubmit={onSubmit}>
-      {createSelects(count, data)}
-      <input type="submit"></input>
-    </form>
+    <div>
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Year</th>
+          <th>Plot</th>
+          <th>Directors</th>
+          <th>Genres</th>
+          <th>Cast</th>
+          <th>Poster</th>
+        </tr>
+        {data.map((movie, index) => (
+          <tr key={index}>
+            <td>{movie.title}</td>
+            <td>{movie.year}</td>
+            <td>{movie.plot}</td>
+            <td>{movie.directors}</td>
+            <td>{movie.genres}</td>
+            <td>{movie.cast}</td>
+            <td><img src={movie.poster} height="100" /></td>
+          </tr>
+        ))}
+      </table>
+      <form onSubmit={fetchData}>
+        <input onChange={onChange} />
+      </form>
+    </div>
+  );
+}
+
+function MovieInfoAll() {
+  const [data, setData] = useState([]);
+  const [movietitle, setMovietitle] = useState("");
+
+  const fetchData = (evt) => {
+    evt.preventDefault();
+    facade.fetchMovieInfoAll(movietitle).then(res => setData([res]));
+  };
+
+  const onChange = evt => {
+    setMovietitle(evt.target.value);
+  }
+
+  return (
+    <div>
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Year</th>
+          <th>Plot</th>
+          <th>Directors</th>
+          <th>Genres</th>
+          <th>Cast</th>
+          <th>Poster</th>
+          <th>ImdbScore</th>
+          <th>ViewerScore</th>
+          <th>CriticScore</th>
+          <th>MetaScore</th>
+        </tr>
+        {data.map((movie, index) => (
+          <tr key={index}>
+            <td>{movie.title}</td>
+            <td>{movie.year}</td>
+            <td>{movie.plot}</td>
+            <td>{movie.directors}</td>
+            <td>{movie.genres}</td>
+            <td>{movie.cast}</td>
+            <td><img src={movie.poster} height="100" /></td>
+            <td>{movie.imdbRating}</td>
+            <td>{movie.viewerRating}</td>
+            <td>{movie.criticRating}</td>
+            <td>{movie.metaCritic}</td>
+          </tr>
+        ))}
+      </table>
+      <form onSubmit={fetchData}>
+        <input onChange={onChange} />
+      </form>
+    </div>
   );
 }
